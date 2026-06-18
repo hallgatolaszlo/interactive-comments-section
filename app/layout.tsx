@@ -1,5 +1,5 @@
+import "@/app/globals.css";
 import { rubik } from "@/app/ui/fonts";
-import "@app/globals.css";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -14,7 +14,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en" className={` ${rubik.className} antialiased`}>
+		<html lang="en" className={`${rubik.className} antialiased`}>
 			<body>{children}</body>
 		</html>
 	);
