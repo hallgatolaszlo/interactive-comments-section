@@ -1,0 +1,77 @@
+.button {
+	height: 48px;
+	min-width: 104px;
+	border-radius: var(--spacing-100);
+	text-align: center;
+	border: none;
+	background-color: var(--purple-600);
+	color: var(--white);
+	text-transform: uppercase;
+}
+
+.button:hover {
+	cursor: pointer;
+	background-color: var(--purple-200);
+}
+
+.cancel-button {
+	width: 161px;
+	background-color: var(--grey-500);
+}
+
+.cancel-button:hover {
+	background-color: var(--grey-500);
+	opacity: 0.4;
+}
+
+.delete-button {
+	width: 161px;
+	background-color: var(--pink-400);
+}
+
+.delete-button:hover {
+	background-color: var(--pink-400);
+	opacity: 0.4;
+}
+
+.button-with-icon {
+	background-color: transparent;
+	border: none;
+}
+
+.button-with-icon:hover {
+	cursor: pointer;
+}
+
+.button-content {
+	display: flex;
+	gap: var(--spacing-100);
+	align-items: center;
+}
+
+.purple-button {
+	color: var(--purple-600);
+}
+
+.purple-button:hover {
+	color: var(--purple-200);
+}
+
+.pink-button {
+	color: var(--pink-400);
+}
+
+.pink-button:hover {
+	color: var(--pink-200);
+}
+
+.vote-button {
+	width: 100%;
+	height: 100%;
+	background-color: transparent;
+	border: none;
+}
+
+.vote-button:hover {
+	cursor: pointer;
+}
