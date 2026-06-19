@@ -1,39 +1,38 @@
 "use client";
 
+import { createComment, State } from "@/app/lib/actions";
+import { createTimestampFromDate } from "@/app/lib/comment-utils";
+import { Comment, User } from "@/app/lib/definitions";
+import { useCurrentUserStore } from "@/app/stores/useCurrentUserStore";
+import { useDeleteModalStore } from "@/app/stores/useDeleteModalStore";
 import { Button, IconButton } from "@/app/ui/comments/button";
 import Counter from "@/app/ui/comments/counter";
 import styles from "@/app/ui/comments/styles/comment.module.css";
 import Image from "next/image";
-import { useState } from "react";
+import { useActionState } from "react";
 
 // TODO: Add functionality to:
-// create comment
 // reply to comment
-// delete comment
-// up/downvote comment
+// up/downvote comment (also save all votes of a user in a separate table to prevent multiple votes and delete score)
 
-export function Comment() {
-	const [voteCount, setVoteCount] = useState(0);
-	const imageUrl = "/avatars/image-amyrobson.png";
-	const username = "amyrobson";
-	const date = "1 month ago";
-	const content =
-		"Impressive! Though it seems the drag feature could be improved. But overall it looks incredible. You've nailed the design and the responsiveness at various breakpoints works really well.";
-
-	function handleUpvote() {
-		setVoteCount(voteCount + 1);
-	}
-
-	function handleDownvote() {
-		setVoteCount(voteCount - 1);
-	}
+// Component for displaying a single comment or reply
+export function CommentCard({
+	comment,
+	user,
+	repliesTo,
+}: {
+	comment: Comment;
+	user: User;
+	repliesTo?: User;
+}) {
+	const { userId } = useCurrentUserStore();
 
 	return (
-		<article className={styles.comment}>
+		<article className={`${styles.comment}`}>
 			<Counter
-				count={voteCount}
-				onUpvote={handleUpvote}
-				onDownvote={handleDownvote}
+				count={comment.score}
+				onUpvote={() => {}}
+				onDownvote={() => {}}
 			/>
 			<div className={styles["comment-section"]}>
 				<div className={styles["comment-header-container"]}>
@@ -42,28 +41,59 @@ export function Comment() {
 							<Image
 								width={32}
 								height={32}
-								src={imageUrl}
+								src={user.imageUrl}
 								alt="User avatar"
 							/>
 						</figure>
-						<h3 className={`subtitle`}>{username}</h3>
-						<p className={`body ${styles["grey-text"]}`}>{date}</p>
+						<h3 className={`subtitle`}>{user.username}</h3>
+						<p className={`body ${styles["grey-text"]}`}>
+							{createTimestampFromDate(comment.createdAt)}
+						</p>
 					</header>
-					<IconButton type="reply" onClick={() => {}} />
+					<div className={styles["comment-actions"]}>
+						<IconButton type="reply" onClick={() => {}} />
+						{userId === comment.userId && (
+							<IconButton
+								type="delete"
+								onClick={() => {
+									useDeleteModalStore.setState({
+										isOpen: true,
+										commentId: comment.id,
+									});
+								}}
+							/>
+						)}
+					</div>
 				</div>
 				<section>
-					<p className={`body ${styles["grey-text"]}`}>{content}</p>
+					<p className={`body ${styles["grey-text"]}`}>
+						{repliesTo && (
+							<span
+								className={`${styles["replying-to"]} subtitle`}
+							>
+								@{repliesTo.username}{" "}
+							</span>
+						)}
+						{comment.content}
+					</p>
 				</section>
 			</div>
 		</article>
 	);
 }
 
+// Form for creating a new comment
 export function CreateComment() {
-	const imageUrl = "/avatars/image-amyrobson.png";
+	const { imageUrl, userId } = useCurrentUserStore();
+	const initialState: State = { message: null, errors: {} };
+	const createCommentWithUserId = createComment.bind(null, userId);
+	const [state, formAction] = useActionState(
+		createCommentWithUserId,
+		initialState,
+	);
 
 	return (
-		<form className={styles.comment}>
+		<form action={formAction} className={styles.comment}>
 			<figure className={styles["create-comment-avatar"]}>
 				<Image
 					width={40}
@@ -73,6 +103,8 @@ export function CreateComment() {
 				/>
 			</figure>
 			<textarea
+				id="content"
+				name="content"
 				className={`${styles["comment-textarea"]} body`}
 				placeholder="Add a comment..."
 			/>
@@ -81,9 +113,9 @@ export function CreateComment() {
 	);
 }
 
-export function CommentReply() {
-	const imageUrl = "/avatars/image-amyrobson.png";
-	const username = "amyrobson";
+// Form for replying to a comment
+export function ReplyToComment() {
+	const { username, imageUrl } = useCurrentUserStore();
 
 	return (
 		<form className={styles.comment}>

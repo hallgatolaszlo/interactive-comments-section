@@ -19,15 +19,24 @@
 }
 
 .comment-header-container {
+	width: 100%;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 }
 
+.comment-actions {
+	display: flex;
+	gap: var(--spacing-300);
+}
+
 .comment-section {
+	width: 100%;
 	display: flex;
 	flex-direction: column;
 	gap: var(--spacing-200);
+	text-wrap: wrap;
+	word-break: break-word;
 }
 
 .comment-avatar {
@@ -48,4 +57,8 @@
 	padding: var(--spacing-100) var(--spacing-200);
 	resize: none;
 	outline-color: var(--purple-600);
+}
+
+.replying-to {
+	color: var(--purple-600);
 }

@@ -26,6 +26,8 @@ interface VoteButtonProps {
 	type?: "upvote" | "downvote";
 }
 
+// Generic button component that can be used for various actions
+// It can be styled differently based on the 'type' prop
 export function Button({ label, onClick, type = "generic" }: ButtonProps) {
 	return (
 		<button
@@ -37,6 +39,7 @@ export function Button({ label, onClick, type = "generic" }: ButtonProps) {
 	);
 }
 
+// Predefined button components for specific actions
 export function IconButton({ onClick, type }: IconButtonProps) {
 	const [isHovered, setIsHovered] = useState(false);
 
@@ -59,6 +62,7 @@ export function IconButton({ onClick, type }: IconButtonProps) {
 	);
 }
 
+// Button component for upvote and downvote actions
 export function VoteButton({ onClick, type }: VoteButtonProps) {
 	const [isHovered, setIsHovered] = useState(false);
 
