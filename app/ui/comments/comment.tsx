@@ -215,6 +215,7 @@ export function CommentCard({
 
 // Form for creating a new comment
 export function CreateComment() {
+	const { breakpoint } = useBreakpoint(BREAKPOINTS, "desktop");
 	const { imageUrl, userId } = useCurrentUserStore();
 	const initialState: State = { message: null, errors: {} };
 	const createCommentWithUserId = createComment.bind(null, userId);
@@ -222,6 +223,33 @@ export function CreateComment() {
 		createCommentWithUserId,
 		initialState,
 	);
+
+	if (breakpoint === "mobile") {
+		return (
+			<form action={formAction} className={styles.comment}>
+				<div className={styles["mobile-form-container"]}>
+					<textarea
+						id="content"
+						name="content"
+						className={`${styles["comment-textarea"]} body`}
+						placeholder="Add a comment..."
+						aria-label="Add a comment"
+					/>
+					<div className={styles["comment-actions-mobile-container"]}>
+						<figure className={styles["create-comment-avatar"]}>
+							<Image
+								width={40}
+								height={40}
+								src={imageUrl}
+								alt="User avatar"
+							/>
+						</figure>
+						<Button label="Send" />
+					</div>
+				</div>
+			</form>
+		);
+	}
 
 	return (
 		<form action={formAction} className={styles.comment}>
@@ -247,6 +275,7 @@ export function CreateComment() {
 
 // Form for replying to a comment
 export function ReplyToComment() {
+	const { breakpoint } = useBreakpoint(BREAKPOINTS, "desktop");
 	const { imageUrl, userId } = useCurrentUserStore();
 	const { username, commentId, setCommentId } = useReplyHandlerStore();
 	const initialState: State = { message: null, errors: {} };
@@ -259,6 +288,39 @@ export function ReplyToComment() {
 		replyToCommentWithUserId,
 		initialState,
 	);
+
+	if (breakpoint === "mobile") {
+		return (
+			<form
+				onSubmit={() => {
+					setCommentId(null);
+				}}
+				action={formAction}
+				className={styles.comment}
+			>
+				<div className={styles["mobile-form-container"]}>
+					<textarea
+						id="content"
+						name="content"
+						className={`${styles["comment-textarea"]} body`}
+						defaultValue={`@${username}`}
+						aria-label={`Replying to ${username}`}
+					/>
+					<div className={styles["comment-actions-mobile-container"]}>
+						<figure className={styles["create-comment-avatar"]}>
+							<Image
+								width={40}
+								height={40}
+								src={imageUrl}
+								alt="User avatar"
+							/>
+						</figure>
+						<Button label="Reply" />
+					</div>
+				</div>
+			</form>
+		);
+	}
 
 	return (
 		<form
