@@ -8,6 +8,11 @@
 	padding: 23.5px 24px;
 }
 
+.mobile-comment {
+	flex-direction: column;
+	padding: var(--spacing-200);
+}
+
 .grey-text {
 	color: var(--grey-500);
 }
@@ -55,7 +60,19 @@
 
 .comment-actions {
 	display: flex;
+	align-items: center;
 	gap: var(--spacing-300);
+}
+
+.comment-actions-mobile {
+	gap: var(--spacing-200);
+}
+
+.comment-actions-mobile-container {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
 }
 
 .comment-section {

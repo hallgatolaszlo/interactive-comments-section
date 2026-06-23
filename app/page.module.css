@@ -1,5 +1,5 @@
 .container {
-	padding: 58px;
+	padding: 58px 16px 0 16px;
 	min-height: 100vh;
 	display: flex;
 	flex-direction: column;
@@ -20,6 +20,21 @@
 	border: 1px solid var(--grey-100);
 	margin-right: var(--spacing-500);
 	margin-left: 46px;
+}
+
+@media only screen and (max-width: 600px) {
+	.container {
+		padding-top: 24px;
+	}
+
+	.main {
+		gap: var(--spacing-200);
+	}
+
+	.reply-line {
+		margin-left: 0;
+		margin-right: var(--spacing-200);
+	}
 }
 
 .reply-container {

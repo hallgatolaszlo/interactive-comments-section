@@ -8,6 +8,7 @@ import {
 	updateCommentScore,
 } from "@/app/lib/actions";
 import { createTimestampFromDate } from "@/app/lib/comment-utils";
+import { BREAKPOINTS } from "@/app/lib/constants";
 import { Comment, User } from "@/app/lib/definitions";
 import { useCurrentUserStore } from "@/app/stores/useCurrentUserStore";
 import { useDeleteModalStore } from "@/app/stores/useDeleteModalStore";
@@ -17,6 +18,83 @@ import Counter from "@/app/ui/comments/counter";
 import styles from "@/app/ui/comments/styles/comment.module.css";
 import Image from "next/image";
 import { useActionState, useState } from "react";
+import useBreakpoint from "use-breakpoint";
+
+export function CommentCounter({ comment }: { comment: Comment }) {
+	return (
+		<Counter
+			count={comment.score}
+			onUpvote={() => {
+				updateCommentScore(comment.id, comment.score + 1);
+			}}
+			onDownvote={() => {
+				updateCommentScore(comment.id, comment.score - 1);
+			}}
+		/>
+	);
+}
+
+export function CommentActions({
+	comment,
+	user,
+	isEditing,
+	setIsEditing,
+}: {
+	comment: Comment;
+	user: User;
+	isEditing: boolean;
+	setIsEditing: (isEditing: boolean) => void;
+}) {
+	const { breakpoint } = useBreakpoint(BREAKPOINTS, "desktop");
+	const { userId } = useCurrentUserStore();
+	const {
+		commentId: replyCommentId,
+		setIsOpen: setReplyModalOpen,
+		setCommentId: setReplyCommentId,
+		setUsername,
+	} = useReplyHandlerStore();
+	const { setIsOpen: setDeleteModalOpen, setCommentId: setDeleteCommentId } =
+		useDeleteModalStore();
+
+	return (
+		<div
+			className={`${styles["comment-actions"]} ${breakpoint === "mobile" ? styles["comment-actions-mobile"] : ""}`}
+		>
+			{userId !== comment.userId && (
+				<IconButton
+					type="reply"
+					onClick={() => {
+						if (replyCommentId === comment.id) {
+							setReplyModalOpen(false);
+							setReplyCommentId(null);
+							setUsername(null);
+							return;
+						}
+
+						setReplyModalOpen(true);
+						setReplyCommentId(comment.id);
+						setUsername(user.username);
+					}}
+				/>
+			)}
+			{userId === comment.userId && (
+				<IconButton
+					type="delete"
+					onClick={() => {
+						setDeleteModalOpen(true);
+						setDeleteCommentId(comment.id);
+					}}
+				/>
+			)}
+			{userId === comment.userId && (
+				<IconButton
+					type="edit"
+					onClick={() => setIsEditing(!isEditing)}
+				/>
+			)}
+		</div>
+	);
+}
 
 // Component for displaying a single comment or reply
 export function CommentCard({
@@ -28,16 +106,10 @@ export function CommentCard({
 	user: User;
 	repliesTo?: User;
 }) {
+	const { breakpoint } = useBreakpoint(BREAKPOINTS, "desktop");
 	const { userId } = useCurrentUserStore();
-	const {
-		isOpen: isReplyModalOpen,
-		commentId: replyCommentId,
-		setIsOpen: setReplyModalOpen,
-		setCommentId: setReplyCommentId,
-		setUsername,
-	} = useReplyHandlerStore();
-	const { setIsOpen: setDeleteModalOpen, setCommentId: setDeleteCommentId } =
-		useDeleteModalStore();
+	const { isOpen: isReplyModalOpen, commentId: replyCommentId } =
+		useReplyHandlerStore();
 
 	const [isEditing, setIsEditing] = useState(false);
 	const initialState: State = { message: null, errors: {} };
@@ -49,16 +121,12 @@ export function CommentCard({
 
 	return (
 		<>
-			<article className={`${styles.comment}`}>
-				<Counter
-					count={comment.score}
-					onUpvote={() => {
-						updateCommentScore(comment.id, comment.score + 1);
-					}}
-					onDownvote={() => {
-						updateCommentScore(comment.id, comment.score - 1);
-					}}
-				/>
+			<article
+				className={`${styles.comment} ${breakpoint === "mobile" ? styles["mobile-comment"] : ""}`}
+			>
+				{breakpoint !== "mobile" && (
+					<CommentCounter comment={comment} />
+				)}
 				<div className={styles["comment-section"]}>
 					<div className={styles["comment-header-container"]}>
 						<header className={styles["comment-header"]}>
@@ -84,40 +152,14 @@ export function CommentCard({
 								{createTimestampFromDate(comment.createdAt)}
 							</p>
 						</header>
-						<div className={styles["comment-actions"]}>
-							{userId !== comment.userId && (
-								<IconButton
-									type="reply"
-									onClick={() => {
-										if (replyCommentId === comment.id) {
-											setReplyModalOpen(false);
-											setReplyCommentId(null);
-											setUsername(null);
-											return;
-										}
-
-										setReplyModalOpen(true);
-										setReplyCommentId(comment.id);
-										setUsername(user.username);
-									}}
-								/>
-							)}
-							{userId === comment.userId && (
-								<IconButton
-									type="delete"
-									onClick={() => {
-										setDeleteModalOpen(true);
-										setDeleteCommentId(comment.id);
-									}}
-								/>
-							)}
-							{userId === comment.userId && (
-								<IconButton
-									type="edit"
-									onClick={() => setIsEditing(!isEditing)}
-								/>
-							)}
-						</div>
+						{breakpoint !== "mobile" && (
+							<CommentActions
+								comment={comment}
+								user={user}
+								isEditing={isEditing}
+								setIsEditing={setIsEditing}
+							/>
+						)}
 					</div>
 					<section>
 						{!isEditing && (
@@ -152,6 +194,17 @@ export function CommentCard({
 						)}
 					</section>
 				</div>
+				{breakpoint === "mobile" && (
+					<div className={styles["comment-actions-mobile-container"]}>
+						<CommentCounter comment={comment} />
+						<CommentActions
+							comment={comment}
+							user={user}
+							isEditing={isEditing}
+							setIsEditing={setIsEditing}
+						/>
+					</div>
+				)}
 			</article>
 			{isReplyModalOpen && replyCommentId === comment.id && (
 				<ReplyToComment />

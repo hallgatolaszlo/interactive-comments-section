@@ -20,7 +20,8 @@
 }
 
 .delete-card {
-	width: 400px;
+	max-width: 400px;
+	width: 90%;
 	height: 252px;
 	border-radius: var(--spacing-100);
 	padding: 27.5px 31px;

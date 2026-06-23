@@ -5,10 +5,6 @@ import { CommentCard, CreateComment } from "@/app/ui/comments/comment";
 import DeleteModal from "@/app/ui/comments/delete-modal";
 import { Fragment } from "react/jsx-runtime";
 
-// TODO:
-// mobile styling
-// accessibility improvements (aria-labels, keyboard navigation, etc.)
-
 export default async function Page() {
 	const comments = await fetchComments();
 	const commentCards = await generateCommentCards({ comments });
