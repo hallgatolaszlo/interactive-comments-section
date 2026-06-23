@@ -1,13 +1,12 @@
 import { ThreadedComment } from "@/app/lib/definitions";
 
-export function createTimestampFromDate(date: Date): string {
-	const now = new Date(
-		new Date().toLocaleString("en-US", { timeZone: "UTC" }),
-	);
-	const createdAt = new Date(date);
-	const diffInSeconds = Math.floor(
-		(now.getTime() - createdAt.getTime()) / 1000,
-	);
+export function createTimestampFromDate(createdAt: Date): string {
+	const now = new Date().getTime();
+	const offset = new Date().getTimezoneOffset() * 60000; // Convert minutes to milliseconds
+	const localDate = new Date(
+		new Date(createdAt).getTime() - offset,
+	).getTime();
+	const diffInSeconds = Math.floor((now - localDate) / 1000);
 
 	if (diffInSeconds < 60) {
 		return `${diffInSeconds} seconds ago`;

@@ -6,7 +6,7 @@ interface CurrentUserState {
 	imageUrl: string;
 }
 
-export const useCurrentUserStore = create<CurrentUserState>((set) => ({
+export const useCurrentUserStore = create<CurrentUserState>(() => ({
 	userId: 4,
 	username: "juliusomo",
 	imageUrl: "/avatars/image-juliusomo.png",

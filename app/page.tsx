@@ -7,7 +7,7 @@ import { Fragment } from "react/jsx-runtime";
 
 // TODO:
 // mobile styling
-// pagination for comments
+// accessibility improvements (aria-labels, keyboard navigation, etc.)
 
 export default async function Page() {
 	const comments = await fetchComments();

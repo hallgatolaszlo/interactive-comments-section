@@ -49,6 +49,15 @@ export function IconButton({ onClick, type }: IconButtonProps) {
 			onClick={onClick}
 			onMouseEnter={() => setIsHovered(true)}
 			onMouseLeave={() => setIsHovered(false)}
+			onFocus={() => setIsHovered(true)}
+			onBlur={() => setIsHovered(false)}
+			aria-label={
+				type === "reply"
+					? "Reply"
+					: type === "delete"
+						? "Delete"
+						: "Edit"
+			}
 		>
 			<div className={styles["button-content"]}>
 				{type === "reply" && <ReplyIcon hover={isHovered} />}
@@ -70,8 +79,11 @@ export function VoteButton({ onClick, type }: VoteButtonProps) {
 		<button
 			className={`${styles["vote-button"]} purple-button`}
 			onClick={onClick}
+			aria-label={type === "upvote" ? "Upvote" : "Downvote"}
 			onMouseEnter={() => setIsHovered(true)}
 			onMouseLeave={() => setIsHovered(false)}
+			onFocus={() => setIsHovered(true)}
+			onBlur={() => setIsHovered(false)}
 		>
 			{type === "upvote" ? (
 				<PlusIcon hover={isHovered} />
