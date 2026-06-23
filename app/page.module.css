@@ -1,5 +1,5 @@
 .container {
-	padding: 58px 16px 0 16px;
+	padding: 58px 16px;
 	min-height: 100vh;
 	display: flex;
 	flex-direction: column;
@@ -25,6 +25,7 @@
 @media only screen and (max-width: 600px) {
 	.container {
 		padding-top: 24px;
+		padding-bottom: 24px;
 	}
 
 	.main {
