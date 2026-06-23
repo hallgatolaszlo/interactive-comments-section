@@ -1,12 +1,9 @@
 import { ThreadedComment } from "@/app/lib/definitions";
 
-export function createTimestampFromDate(createdAt: Date): string {
+export function createTimestampFromDate(date: Date): string {
 	const now = new Date().getTime();
-	const offset = new Date().getTimezoneOffset() * 60000; // Convert minutes to milliseconds
-	const localDate = new Date(
-		new Date(createdAt).getTime() - offset,
-	).getTime();
-	const diffInSeconds = Math.floor((now - localDate) / 1000);
+	const createdAt = new Date(date).getTime();
+	const diffInSeconds = Math.floor((now - createdAt) / 1000);
 
 	if (diffInSeconds < 60) {
 		return `${diffInSeconds} seconds ago`;
